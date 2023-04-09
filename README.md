@@ -9,3 +9,5 @@
   - Lombok
   - Validation
   - H2 Database
+---
+:link: [[2023-04-03] JPA Entity Mapping(Converter)](04-03.md)
