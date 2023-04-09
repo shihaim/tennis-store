@@ -1,0 +1,28 @@
+# spring 기본 profile을 local로 한다. (기본값은 default)
+spring:
+  profiles:
+    active: local
+
+# local profile을 설정한다.
+---
+spring:
+  profiles:
+    default: local
+  h2:
+    console:
+      enabled: true # h2 브라우저에서 H2 데이터베이스 콘솔을 접속할 수 있게 한다.
+      path: /h2-console # 접속경로를 설정한다.
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/tennis-store
+    driver-class-name: org.h2.Driver
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: create # 어플리케이션 실행 시점에 테이블을 drop하고 다시 생성한다.
+    properties:
+      hibernate:
+        format_sql: true # sql 로그를 남길 때 포맷팅한다.
+
+logging:
+  level:
+    org.hibernate.SQL: debug # logger를 통해 하이버네이트 실행 SQL을 남긴다.
