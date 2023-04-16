@@ -23,6 +23,12 @@ spring:
       hibernate:
         format_sql: true # sql 로그를 남길 때 포맷팅한다.
 
-logging:
-  level:
-    org.hibernate.SQL: debug # logger를 통해 하이버네이트 실행 SQL을 남긴다.
+# 운영기에서 서비스시 SQL 로깅을 비활성화 하려면 해당 옵션을 추가한다.
+#decorator:
+#  datasource:
+#    p6spy:
+#      enable-logging: false
+
+#logging:
+#  level:
+#    org.hibernate.SQL: debug # logger를 통해 하이버네이트 실행 SQL을 남긴다.
