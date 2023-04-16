@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,5 +48,19 @@ public class Member {
         this.address = address;
         this.withdrawal = false;
         this.grade = MemberGrade.BRONZE;
+    }
+
+    public void changeMemberInfo(String name, Address address, MemberGrade grade) {
+        this.name = name;
+        this.address = address;
+        this.grade = grade;
+    }
+
+    public String initializePassword() {
+        String randomPassword = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+
+        this.password = Password.of(randomPassword);
+
+        return randomPassword;
     }
 }

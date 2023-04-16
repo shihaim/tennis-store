@@ -29,6 +29,15 @@ class MemberServiceTest {
     FindMemberService findMemberService;
 
     @Autowired
+    ChangeMemberInfoService changeMemberInfoService;
+
+    @Autowired
+    DeleteMemberService deleteMemberService;
+
+    @Autowired
+    InitializePasswordService initializePasswordService;
+
+    @Autowired
     MemberRepository memberRepository;
 
     @BeforeEach
@@ -108,6 +117,97 @@ class MemberServiceTest {
         assertThat(members.size()).isEqualTo(2);
         assertThat(members).extracting("email").containsExactly("hashi00518@tnctec.co.kr", "hashi00518@gmail.com");
         assertThat(members).extracting("name").containsExactly("하승완", "HSW");
+    }
+
+    @Test
+    @DisplayName("회원 정보 변경 서비스")
+    void testChangeMemberInfo() throws Exception {
+        // given
+        String name = "HSW";
+        String address1 = "서울시 강남구 도곡로 117";
+        String address2 = "12층";
+        String zipcode = "12345";
+        MemberGrade grade = MemberGrade.GOLD;
+
+        ChangeMemberInfoRequest request = new ChangeMemberInfoRequest(
+                name,
+                address1,
+                address2,
+                zipcode,
+                grade
+        );
+
+        Member member = memberRepository.findAll().get(0);
+
+        // when
+        Long memberId = changeMemberInfoService.changeMemberInfo(member.getId(), request);
+        Member findMember = memberRepository.findById(memberId).get();
+
+        // then
+        assertThat(findMember.getName()).isEqualTo(name);
+        assertThat(findMember.getAddress()).isEqualTo(new Address(address1, address2, zipcode));
+        assertThat(findMember.getGrade()).isEqualTo(grade);
+    }
+
+    @Test
+    @DisplayName("회원 삭제 서비스")
+    void testDeleteMember() throws Exception {
+        // given
+        Member member = memberRepository.findAll().get(0);
+
+        // when
+        deleteMemberService.deleteMember(member.getId());
+        List<Member> members = memberRepository.findAll();
+
+        // then
+        assertThat(members).isEmpty();
+    }
+
+
+    @Test
+    @DisplayName("회원 패스워드 초기화 서비스")
+    void testInitializePassword() throws Exception {
+        // given
+        Member member = memberRepository.findAll().get(0);
+        Long memberId = member.getId();
+
+        // when
+        String initializedPassword = initializePasswordService.initializePassword(memberId);
+
+        // then
+        assertThat(member.getPassword().getValue()).isEqualTo(initializedPassword);
+    }
+
+    @Test
+    @DisplayName("회원 ID를 통한 단건 조회 서비스")
+    void testFindMember() throws Exception {
+        //given
+        String email = "hashi00517@tnctec.co.kr";
+        String password = "1234";
+        String name = "하승완";
+        String address1 = "서울시 영등포구 신길동 51-3";
+        String address2 = "7층";
+        String zipcode = "11111";
+
+        Member member = new Member(
+                Email.of(email),
+                Password.of(password),
+                name,
+                new Address(address1, address2, zipcode));
+
+        Member saveMember = memberRepository.save(member);
+
+        //when
+        FindMemberResponse findMember = findMemberService.findMember(saveMember.getId());
+
+        //then
+        assertThat(findMember.memberId()).isEqualTo(saveMember.getId());
+        assertThat(findMember.name()).isEqualTo(saveMember.getName());
+        assertThat(findMember.address1()).isEqualTo(saveMember.getAddress().getAddress1());
+        assertThat(findMember.address2()).isEqualTo(saveMember.getAddress().getAddress2());
+        assertThat(findMember.zipcode()).isEqualTo(saveMember.getAddress().getZipcode());
+        assertThat(findMember.grade()).isEqualTo(MemberGrade.BRONZE);
+
     }
 
 }

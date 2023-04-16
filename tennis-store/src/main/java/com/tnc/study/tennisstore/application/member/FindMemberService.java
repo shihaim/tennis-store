@@ -1,5 +1,6 @@
 package com.tnc.study.tennisstore.application.member;
 
+import com.tnc.study.tennisstore.domain.member.Member;
 import com.tnc.study.tennisstore.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,18 @@ public class FindMemberService {
                         member.getAddress().getZipcode(),
                         member.getGrade()
                 )).toList();
+    }
+
+    public FindMemberResponse findMember(Long id) {
+        Member member = MemberServiceHelper.findExistingMember(memberRepository, id);
+        return new FindMemberResponse(
+                member.getId(),
+                member.getEmail().getAddress(),
+                member.getName(),
+                member.getAddress().getAddress1(),
+                member.getAddress().getAddress2(),
+                member.getAddress().getZipcode(),
+                member.getGrade()
+        );
     }
 }

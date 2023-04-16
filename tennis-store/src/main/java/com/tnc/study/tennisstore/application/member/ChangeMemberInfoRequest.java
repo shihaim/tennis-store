@@ -1,16 +1,20 @@
 package com.tnc.study.tennisstore.application.member;
 
 import com.tnc.study.tennisstore.domain.member.MemberGrade;
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-//@Getter
-public record FindMemberResponse(
-        Long memberId,
-        String email,
+public record ChangeMemberInfoRequest(
+        @NotBlank
         String name,
+        @NotBlank
         String address1,
+        @NotBlank
         String address2,
+        @NotBlank
         String zipcode,
+        @NotNull
         MemberGrade grade
+
 ) {
 }
