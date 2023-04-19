@@ -6,6 +6,8 @@ import com.tnc.study.tennisstore.framework.web.response.Content;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,10 +74,9 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Content<FindProductResponse>> findProducts() {
-        List<FindProductResponse> products = findProductService.findProducts();
-        Content<FindProductResponse> content = Content.of(products);
-        return ResponseEntity.ok(content);
+    public ResponseEntity<Page<FindProductResponse>> findProducts(Pageable pageable) {
+        Page<FindProductResponse> products = findProductService.findProducts(pageable);
+        return ResponseEntity.ok(products);
     }
 
     @DeleteMapping("/{id}")

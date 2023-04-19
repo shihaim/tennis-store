@@ -2,6 +2,8 @@ package com.tnc.study.tennisstore.application.product;
 
 import com.tnc.study.tennisstore.domain.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +19,8 @@ public class FindProductService {
      * 전체 상품 조회
      * @return
      */
-    public List<FindProductResponse> findProducts() {
-        return productRepository.findAll()
-                .stream()
+    public Page<FindProductResponse> findProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
                 .map(product -> new FindProductResponse(
                         product.getId(),
                         product.getProductType(),
@@ -28,7 +29,6 @@ public class FindProductService {
                         product.getBrand(),
                         product.getPrice().getAmount(),
                         product.getStockQuantity()
-                ))
-                .toList();
+                ));
     }
 }

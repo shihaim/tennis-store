@@ -13,7 +13,7 @@ spring:
       enabled: true # h2 브라우저에서 H2 데이터베이스 콘솔을 접속할 수 있게 한다.
       path: /h2-console # 접속경로를 설정한다.
   datasource:
-    url: jdbc:h2:tcp://localhost/D:/tennis-store
+    url: jdbc:h2:tcp://localhost/~/tennis-store
     driver-class-name: org.h2.Driver
     username: sa
   jpa:
@@ -22,6 +22,12 @@ spring:
     properties:
       hibernate:
         format_sql: true # sql 로그를 남길 때 포맷팅한다.
+  data:
+    web:
+      pageable:
+        default-page-size: 100
+        max-page-size: 200
+
 
 # 운영기에서 서비스시 SQL 로깅을 비활성화 하려면 해당 옵션을 추가한다.
 #decorator:

@@ -1,13 +1,13 @@
 # spring 기본 profile을 local로 한다. (기본값은 default)
 spring:
   profiles:
-    active: local
+    active: test
 
 # local profile을 설정한다.
 ---
 spring:
   profiles:
-    default: local
+    default: test
   h2:
     console:
       enabled: true # h2 브라우저에서 H2 데이터베이스 콘솔을 접속할 수 있게 한다.

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -114,20 +117,28 @@ class ProductServiceTest {
     @DisplayName("상품 조회 서비스")
     void testFindProducts() throws Exception {
         // given
+        PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "price"));
 
         // when
-        List<FindProductResponse> products = findProductService.findProducts();
+        Page<FindProductResponse> page = findProductService.findProducts(pageRequest);
+        List<FindProductResponse> products = page.getContent();
 
         // then
-        assertThat(products.size()).isEqualTo(3);
+        assertThat(products.size()).isEqualTo(2);
         assertThat(products).extracting("name")
-                .containsExactly("스피드 프로", "에어 줌 페가수스", "코치");
+                .containsExactly("코치", "에어 줌 페가수스");
         assertThat(products).extracting("brand")
-                .containsExactly("헤드", "나이키", "낫소");
+                .containsExactly("낫소", "나이키");
         assertThat(products).extracting("price")
-                .containsExactly(BigDecimal.valueOf(300_000L), BigDecimal.valueOf(149_000L), BigDecimal.valueOf(2900L));
+                .containsExactly(BigDecimal.valueOf(2900L), BigDecimal.valueOf(149_000L));
         assertThat(products).extracting("stockQuantity")
-                .containsExactly(10, 20, 30);
+                .containsExactly(30, 20);
+
+        assertThat(page.getTotalElements()).isEqualTo(3); // 전체 데이터 개수 반환
+        assertThat(page.getTotalPages()).isEqualTo(2); // 전체 페이지수
+        assertThat(page.getNumber()).isEqualTo(0); // 페이지 번호
+        assertThat(page.isFirst()).isTrue(); // 첫번째 페이지 항목이냐?
+        assertThat(page.hasNext()).isTrue(); // 다음 페이지가 있는가?
     }
 
     @Test
