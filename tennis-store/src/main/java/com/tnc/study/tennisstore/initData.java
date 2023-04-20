@@ -5,6 +5,10 @@ import com.tnc.study.tennisstore.domain.Email;
 import com.tnc.study.tennisstore.domain.Money;
 import com.tnc.study.tennisstore.domain.Password;
 import com.tnc.study.tennisstore.domain.member.Member;
+import com.tnc.study.tennisstore.domain.order.Order;
+import com.tnc.study.tennisstore.domain.order.OrderLine;
+import com.tnc.study.tennisstore.domain.order.Receiver;
+import com.tnc.study.tennisstore.domain.product.Product;
 import com.tnc.study.tennisstore.domain.product.ball.Ball;
 import com.tnc.study.tennisstore.domain.product.ball.BallType;
 import com.tnc.study.tennisstore.domain.product.racquet.Racquet;
@@ -17,6 +21,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Transactional
@@ -71,6 +78,22 @@ public class initData implements CommandLineRunner {
             em.persist(racquet);
             em.persist(shoes);
             em.persist(ball);
+        }
+
+        for (int i = 1; i <= 100; i++) {
+            Product product1 = em.find(Product.class, i);
+            Product product2 = em.find(Product.class, i + 1);
+            Product product3 = em.find(Product.class, i + 2);
+
+            List<OrderLine> orderLines = Arrays.asList(
+                    new OrderLine(product1, product1.getPrice(), 1),
+                    new OrderLine(product2, product2.getPrice(), 1),
+                    new OrderLine(product3, product3.getPrice(), 1)
+            );
+
+            Receiver receiver = new Receiver(member.getName(), "010-1234-5678");
+            Order order = new Order(member, orderLines, member.getAddress(), receiver, "안전하게 와주세요");
+            em.persist(order);
         }
     }
 }
