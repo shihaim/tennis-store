@@ -6,10 +6,7 @@ import com.tnc.study.tennisstore.domain.Money;
 import com.tnc.study.tennisstore.domain.Password;
 import com.tnc.study.tennisstore.domain.member.Member;
 import com.tnc.study.tennisstore.domain.member.MemberRepository;
-import com.tnc.study.tennisstore.domain.order.DeliveryState;
-import com.tnc.study.tennisstore.domain.order.Order;
-import com.tnc.study.tennisstore.domain.order.OrderRepository;
-import com.tnc.study.tennisstore.domain.order.OrderState;
+import com.tnc.study.tennisstore.domain.order.*;
 import com.tnc.study.tennisstore.domain.product.Product;
 import com.tnc.study.tennisstore.domain.product.ProductRepository;
 import com.tnc.study.tennisstore.domain.product.ball.Ball;
@@ -25,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,6 +37,8 @@ class OrderServiceTest {
 
     @Autowired
     CreateOrderService createOrderService;
+    @Autowired
+    OrderStateService orderStateService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -83,6 +83,19 @@ class OrderServiceTest {
 
         productRepository.save(racquet);
         productRepository.save(shoes);
+
+        // 주문 정보 생성
+        String receiverPhone = "010-1234-5678";
+        String deliveryMessage = "안전하게 와주세요";
+
+        List<OrderLine> orderLines = Arrays.asList(
+                new OrderLine(racquet, racquet.getPrice(), 2),
+                new OrderLine(shoes, shoes.getPrice(), 5)
+        );
+        Receiver receiver = new Receiver(member.getName(), receiverPhone);
+
+        Order order = new Order(member, orderLines, address, receiver, deliveryMessage);
+        orderRepository.save(order);
     }
 
     @Test
@@ -115,9 +128,34 @@ class OrderServiceTest {
 
         assertThat(order.getMember().getName()).isEqualTo(member.getName());
         assertThat(order.getState()).isEqualTo(OrderState.ORDER_RECEIVED);
-        assertThat(productList).extracting("stockQuantity").containsExactly(8, 8);
+        assertThat(productList).extracting("stockQuantity").containsExactly(6, 3);
         assertThat(order.getDelivery().getDeliveryFee()).isEqualTo(Money.ZERO);
         assertThat(order.getDelivery().getState()).isEqualTo(DeliveryState.PREPARING);
         assertThat(order.getDelivery().getMessage()).isEqualTo(deliveryMessage);
+    }
+
+    @Test
+    @DisplayName("주문 확정 서비스")
+    void testConfirmOrder() {
+        Order order = orderRepository.findAll().get(0);
+
+        orderStateService.confirmOrder(order.getId());
+        Order findOrder = orderRepository.findById(order.getId()).get();
+
+        assertThat(findOrder.getState()).isEqualTo(OrderState.PURCHASE_CONFIRMATION);
+    }
+
+    @Test
+    @DisplayName("주문 취소 서비스")
+    void testCancelOrder() {
+        Order order = orderRepository.findAll().get(0);
+
+        orderStateService.cancelOrder(order.getId());
+        Order findOrder = orderRepository.findById(order.getId()).get();
+        List<Product> products = productRepository.findAll();
+
+        assertThat(findOrder.getState()).isEqualTo(OrderState.CANCELED);
+        assertThat(products).extracting("stockQuantity")
+                .containsExactly(10, 10);
     }
 }

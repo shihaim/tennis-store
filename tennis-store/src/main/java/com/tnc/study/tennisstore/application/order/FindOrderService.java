@@ -1,11 +1,14 @@
 package com.tnc.study.tennisstore.application.order;
 
+import com.tnc.study.tennisstore.domain.order.Delivery;
 import com.tnc.study.tennisstore.domain.order.Order;
 import com.tnc.study.tennisstore.domain.order.OrderLine;
 import com.tnc.study.tennisstore.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +55,15 @@ public class FindOrderService {
         return orders;
     }
 
+    public Page<FindOrderResponse> findTotalOrders(Pageable pageable) {
+        return orderRepository.findTotalOrders(pageable).map(FindOrderService::convert);
+    }
+
+    public Slice<FindOrderResponse> findOrdersByMember(Long memberId, Pageable pageable) {
+        return orderRepository.findOrdersByMemberId(memberId, pageable)
+                .map(FindOrderService::convert);
+    }
+
     private static FindOrderResponse convert(Order order) {
         List<OrderLine> orderLines = order.getOrderLines();
         List<OrderLineResponse> orderLineResponses = orderLines.stream()
@@ -61,6 +73,18 @@ public class FindOrderService {
                         orderLine.getOrderPrice().getAmount(),
                         orderLine.getOrderCount()
                 )).toList();
+
+        Delivery delivery = order.getDelivery();
+
+        DeliveryResponse deliveryResponse = new DeliveryResponse(
+                delivery.getId(),
+                delivery.getAddress(),
+                delivery.getReceiver(),
+                delivery.getMessage(),
+                delivery.getDeliveryFee().getAmount(),
+                delivery.getTrackingNumber()
+        );
+
         return new FindOrderResponse(
                 order.getId(),
                 order.getMember().getId(),
@@ -68,7 +92,9 @@ public class FindOrderService {
                 order.getCreatedDate(),
                 order.getState(),
                 order.getState().getMessage(),
-                orderLineResponses
+                order.getTotalPrice().getAmount(),
+                orderLineResponses,
+                deliveryResponse
         );
     }
 }

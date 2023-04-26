@@ -1,6 +1,8 @@
 package com.tnc.study.tennisstore.application.order;
 
+import com.tnc.study.tennisstore.domain.Address;
 import com.tnc.study.tennisstore.domain.order.OrderState;
+import com.tnc.study.tennisstore.domain.order.Receiver;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +15,9 @@ public record FindOrderResponse(
         LocalDateTime orderDate,
         OrderState orderState,
         String orderStateMessage,
-        List<OrderLineResponse> orderLines
+        BigDecimal orderTotalPrice,
+        List<OrderLineResponse> orderLines,
+        DeliveryResponse delivery
 ) {
 
     public record OrderLineResponse(
@@ -21,6 +25,17 @@ public record FindOrderResponse(
             Long productId,
             BigDecimal orderLinePrice,
             Integer orderQuantity
+    ) {
+
+    }
+
+    public record DeliveryResponse(
+        Long deliveryId,
+        Address address,
+        Receiver receiver,
+        String deliveryMessage,
+        BigDecimal deliveryFee,
+        String trackingNumber
     ) {
 
     }

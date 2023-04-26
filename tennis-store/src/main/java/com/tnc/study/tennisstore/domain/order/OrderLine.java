@@ -51,4 +51,8 @@ public class OrderLine extends BaseEntity {
     Money getTotalPrice() {
         return orderPrice.multiply(orderCount);
     }
+
+    void cancel() {
+        product.addStock(orderCount);
+    }
 }

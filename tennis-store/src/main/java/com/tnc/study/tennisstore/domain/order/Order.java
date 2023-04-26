@@ -72,4 +72,34 @@ public class Order extends BaseEntity {
                 .map(OrderLine::getTotalPrice)
                 .reduce(Money.ZERO, Money::add);
     }
+
+    /**
+     * 구매 확정
+     */
+    public void confirm() {
+        if (state == OrderState.CANCELED) {
+            throw new OrderStateException("취소 건은 구매 확정할 수 없습니다.");
+        }
+
+        this.state = OrderState.PURCHASE_CONFIRMATION;
+    }
+
+    /**
+     * 주문 취소
+     */
+    public void cancel() {
+        if (delivery.getState() != DeliveryState.PREPARING) {
+            throw new AlreadyDeliveryException("이미 배송 중인 주문은 취소할 수 없습니다.");
+        }
+
+        if (state == OrderState.PURCHASE_CONFIRMATION) {
+            throw new OrderStateException("구매 확정인 주문은 취소할 수 없습니다.");
+        }
+
+        for (OrderLine orderLine : orderLines) {
+            orderLine.cancel();
+        }
+
+        this.state = OrderState.CANCELED;
+    }
 }

@@ -36,9 +36,23 @@ public class AdminOrderController {
         return ResponseEntity.ok(orders);
     }
 
+//    @GetMapping
+    public ResponseEntity<Page<FindOrderResponse>> findOrders2(Pageable pageable) {
+        Page<FindOrderResponse> orders = findOrderService.findTotalOrders(pageable);
+
+        return ResponseEntity.ok(orders);
+    }
+
+//    @GetMapping
+    public ResponseEntity<Page<FindOrderResponse>> findTotalOrder(Pageable pageable) {
+        Page<FindOrderResponse> orders = findOrderService.findTotalOrders(pageable);
+
+        return ResponseEntity.ok(orders);
+    }
+
     @GetMapping
-    public ResponseEntity<Page<FindOrderResponse2>> findOrders2(Pageable pageable) {
-        Page<FindOrderResponse2> orders = findOrderService.findOrderResponse2(pageable);
+    public ResponseEntity<Page<FindOrderResponse>> findOrdersByMember(Pageable pageable) {
+        Page<FindOrderResponse> orders = findOrderService.findTotalOrders(pageable);
 
         return ResponseEntity.ok(orders);
     }

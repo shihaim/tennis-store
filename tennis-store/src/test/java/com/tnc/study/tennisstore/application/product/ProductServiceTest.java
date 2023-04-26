@@ -185,4 +185,25 @@ class ProductServiceTest {
         // then
         assertThat(products.size()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("재고 수량 20개 미만 상품 가격 10% 인상")
+    void testIncreasePrice() {
+        Product beforeProduct = productRepository.findAll()
+                .stream()
+                .filter(product -> "스피드 프로".equals(product.getName()))
+                .findFirst()
+                .get();
+
+        productRepository.increasePriceBy10PerByStockQuantityLessThan20();
+
+        Product afterProduct = productRepository.findAll()
+                .stream()
+                .filter(product -> "스피드 프로".equals(product.getName()))
+                .findFirst()
+                .get();
+
+        assertThat(beforeProduct.getPrice()).isEqualTo(Money.of(300_000L));
+        assertThat(afterProduct.getPrice()).isEqualTo(Money.of(330_000L));
+    }
 }

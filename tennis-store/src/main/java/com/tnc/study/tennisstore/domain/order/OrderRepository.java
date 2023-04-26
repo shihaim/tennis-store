@@ -1,9 +1,11 @@
 package com.tnc.study.tennisstore.domain.order;
 
 import com.tnc.study.tennisstore.application.order.FindOrderLineResponse;
+import com.tnc.study.tennisstore.application.order.FindOrderResponse;
 import com.tnc.study.tennisstore.application.order.FindOrderResponse2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,24 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         join fetch o.orderLines
     """)
     List<Order> findOrdersUsingFetchJoin();
+
+    @Query(value = """
+        select o 
+        from Order o
+        join fetch o.member
+        join fetch o.delivery
+    """, countQuery = "select count(o) from Order o")
+    Page<Order> findTotalOrders(Pageable pageable);
+
+    @Query("""
+        select o 
+        from Order o
+        join fetch o.member
+        join fetch o.delivery
+        where o.member.id = :memberId
+        order by o.id desc
+    """)
+    Slice<Order> findOrdersByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query(
         value = """
