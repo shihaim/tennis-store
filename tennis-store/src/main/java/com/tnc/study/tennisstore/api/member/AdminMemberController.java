@@ -1,6 +1,7 @@
 package com.tnc.study.tennisstore.api.member;
 
 import com.tnc.study.tennisstore.application.member.*;
+import com.tnc.study.tennisstore.domain.member.query.FindMemberCondition;
 import com.tnc.study.tennisstore.framework.web.response.ApiResponse;
 import com.tnc.study.tennisstore.framework.web.response.Content;
 import jakarta.validation.Valid;
@@ -32,8 +33,8 @@ public class AdminMemberController {
     }
 
     @GetMapping
-    public ResponseEntity<Content<FindMemberResponse>> findMembersV2() {
-        List<FindMemberResponse> members = findMemberService.findMembers();
+    public ResponseEntity<Content<FindMemberResponse>> findMembersV2(FindMemberCondition condition) {
+        List<FindMemberResponse> members = findMemberService.findMembers(condition);
         Content<FindMemberResponse> content = Content.of(members);
         return ResponseEntity.ok(content);
     }

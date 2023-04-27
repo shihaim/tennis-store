@@ -5,6 +5,7 @@ import com.tnc.study.tennisstore.domain.Email;
 import com.tnc.study.tennisstore.domain.Money;
 import com.tnc.study.tennisstore.domain.Password;
 import com.tnc.study.tennisstore.domain.member.Member;
+import com.tnc.study.tennisstore.domain.member.MemberGrade;
 import com.tnc.study.tennisstore.domain.order.Order;
 import com.tnc.study.tennisstore.domain.order.OrderLine;
 import com.tnc.study.tennisstore.domain.order.Receiver;
@@ -43,7 +44,29 @@ public class initData implements CommandLineRunner {
                 new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
         );
 
+        Member member2 = new Member(
+                Email.of("hashi00517@tnctec.co.kr"),
+                Password.of("1234"),
+                "하승완",
+                new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
+        );
+
+        Member member3 = new Member(
+                Email.of("hashi00519@tnctec.co.kr"),
+                Password.of("1234"),
+                "하승완",
+                new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
+        );
+
+        member3.changeMemberInfo(
+                member3.getName(),
+                member3.getAddress(),
+                MemberGrade.GOLD
+        );
+
         em.persist(member);
+        em.persist(member2);
+        em.persist(member3);
 
         for (int i = 1; i <= 100; i++) {
             Racquet racquet = new Racquet(
