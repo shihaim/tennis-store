@@ -1,8 +1,11 @@
 package com.tnc.study.tennisstore;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -34,6 +37,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -67,19 +71,19 @@ public class QueryDSLTest {
         Member member = new Member(
                 Email.of("kjpmj@tnctec.co.kr"),
                 Password.of("1234"),
-                "김명진",
+                "하승완",
                 new Address("서울시 관악구 은천로 37길 21", "501호", "05123")
         );
         Member member2 = new Member(
                 Email.of("kjpmj@naver.com"),
                 Password.of("1234"),
-                "김명진",
+                "하승완",
                 new Address("서울시 관악구 은천로 37길 21", "501호", "05123")
         );
         Member member3 = new Member(
                 Email.of("kjpmj77@kakao.com"),
                 Password.of("1234"),
-                "MJK",
+                "HSW",
                 new Address("서울시 관악구 은천로 37길 21", "501호", "05123")
         );
 
@@ -159,13 +163,13 @@ public class QueryDSLTest {
         Member findMember = queryFactory
                 .selectFrom(member)
                 .where(
-                        member.name.eq("김명진")
+                        member.name.eq("하승완")
                                 .and(member.grade.eq(MemberGrade.SILVER))
                 )
                 .fetchOne();
 
         assertThat(findMember).isNotNull();
-        assertThat(findMember.getName()).isEqualTo("김명진");
+        assertThat(findMember.getName()).isEqualTo("하승완");
         assertThat(findMember.getGrade()).isEqualTo(MemberGrade.SILVER);
     }
 
@@ -188,12 +192,12 @@ public class QueryDSLTest {
         Member findMember = queryFactory
                 .selectFrom(member)
                 .where(
-                        member.name.eq("김명진"),
+                        member.name.eq("하승완"),
                         member.grade.eq(MemberGrade.SILVER)
                 ).fetchOne();
 
         assertThat(findMember).isNotNull();
-        assertThat(findMember.getName()).isEqualTo("김명진");
+        assertThat(findMember.getName()).isEqualTo("하승완");
         assertThat(findMember.getGrade()).isEqualTo(MemberGrade.SILVER);
     }
 
@@ -316,7 +320,7 @@ public class QueryDSLTest {
         List<Order> orders = queryFactory
                 .selectFrom(order)
                 .join(order.member, member)
-                .where(member.name.eq("MJK"))
+                .where(member.name.eq("HSW"))
                 .fetch();
 
         // false면 아직 로딩 전 / true면 로딩된 상태
@@ -336,7 +340,7 @@ public class QueryDSLTest {
         List<Order> orders = queryFactory
                 .selectFrom(order)
                 .join(order.member, member).fetchJoin()
-                .where(member.name.eq("MJK"))
+                .where(member.name.eq("HSW"))
                 .fetch();
 
         // false면 아직 로딩 전 / true면 로딩된 상태
@@ -415,8 +419,8 @@ public class QueryDSLTest {
     void test14() {
         List<String> result = queryFactory
                 .select(member.name
-                        .when("김명진").then("한글")
-                        .when("MJK").then("영어")
+                        .when("하승완").then("한글")
+                        .when("HSW").then("영어")
                         .otherwise("하하하하"))
                 .from(member)
                 .orderBy(member.name.asc()).fetch();
@@ -479,13 +483,13 @@ public class QueryDSLTest {
         Tuple result = queryFactory
                 .select(member.name, Expressions.constant("오늘 점심 뭐 먹지?"))
                 .from(member)
-                .where(member.name.eq("MJK"))
+                .where(member.name.eq("HSW"))
                 .fetchOne();
 
         String memberName = result.get(member.name);
         String constant = result.get(Expressions.constant("오늘 점심 뭐 먹지?"));
 
-        assertThat(memberName).isEqualTo("MJK");
+        assertThat(memberName).isEqualTo("HSW");
         assertThat(constant).isEqualTo("오늘 점심 뭐 먹지?");
     }
 
@@ -495,10 +499,10 @@ public class QueryDSLTest {
         String result = queryFactory
                 .select(member.name.concat("_").concat(member.grade.stringValue()))
                 .from(member)
-                .where(member.name.eq("MJK"))
+                .where(member.name.eq("HSW"))
                 .fetchOne();
 
-        assertThat(result).isEqualTo("MJK_GOLD");
+        assertThat(result).isEqualTo("HSW_GOLD");
     }
 
     @Test
@@ -584,5 +588,197 @@ public class QueryDSLTest {
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    @Test
+    @DisplayName("동적 쿼리 - BooleanBuilder")
+    void test23() throws Exception {
+        // given
+        String nameCondition = "하승완";
+        MemberGrade gradeCondition = MemberGrade.SILVER;
+
+        // when
+        List<Member> members1 = searchMember1(nameCondition, gradeCondition);
+        List<Member> members2 = searchMember1(nameCondition, null);
+
+        // then
+        Member member1 = members1.get(0);
+
+        assertThat(members1.size()).isEqualTo(1);
+        assertThat(member1.getName()).isEqualTo("하승완");
+        assertThat(member1.getGrade()).isEqualTo(MemberGrade.SILVER);
+
+        assertThat(members2.size()).isEqualTo(2);
+
+    }
+
+    private List<Member> searchMember1(String nameCondition, MemberGrade gradeCondition) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (nameCondition != null) {
+            builder.and(member.name.eq(nameCondition));
+        }
+
+        if (gradeCondition != null) {
+            builder.and(member.grade.eq(gradeCondition));
+        }
+
+        return queryFactory
+                .selectFrom(member)
+                .where(builder)
+                .fetch();
+    }
+
+    @Test
+    @DisplayName("동적 쿼리 - Where")
+    void test24() throws Exception {
+        // given
+        String nameCondition = "하승완";
+        MemberGrade gradeCondition = MemberGrade.SILVER;
+
+        // when
+        List<Member> members1 = searchMember2(nameCondition, gradeCondition);
+        List<Member> members2 = searchMember2(nameCondition, null);
+
+        // then
+        Member member1 = members1.get(0);
+
+        assertThat(members1.size()).isEqualTo(1);
+        assertThat(member1.getName()).isEqualTo("하승완");
+        assertThat(member1.getGrade()).isEqualTo(MemberGrade.SILVER);
+
+        assertThat(members2.size()).isEqualTo(2);
+    }
+
+    private List<Member> searchMember2(String nameCondition, MemberGrade gradeCondition) {
+        return queryFactory
+                .selectFrom(member)
+                .where(
+                        nameEq(nameCondition),
+                        gradeEq(gradeCondition)
+                )
+                .fetch();
+    }
+
+    private BooleanExpression nameEq(String name) {
+        return StringUtils.hasText(name) ? member.name.eq(name) : null;
+    }
+
+    private BooleanExpression gradeEq(MemberGrade grade) {
+        return grade != null ? member.grade.eq(grade) : null;
+    }
+
+    @Test
+    @DisplayName("수정 벌크 연산")
+    void test25() throws Exception {
+        // given
+
+        // when
+        long count = queryFactory
+                .update(product)
+                .set(product.description, "매우 비싸네요")
+                .where(product.price.amount.goe(300_000))
+                .execute();
+
+        // then
+        assertThat(count).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("수정 벌크 연산 2")
+    void test26() throws Exception {
+        // given
+
+        // when
+        long count = queryFactory
+                .update(product)
+                .set(product.price.amount, product.price.amount.multiply(Expressions.constant(1.1)))
+                .where(product.name.eq("공 1"))
+                .execute();
+
+        // then
+        em.flush();
+        em.clear();
+
+        Product ball1 = queryFactory
+                .selectFrom(product)
+                .where(product.name.eq("공 1"))
+                .fetchOne();
+
+        assertThat(count).isEqualTo(1);
+        assertThat(ball1.getPrice()).isEqualTo(Money.of(3301.10));
+    }
+
+    @Test
+    @DisplayName("삭제 벌크 연산")
+    void test27() throws Exception {
+        // given
+
+        // when
+        long count = queryFactory
+                .delete(member)
+                .where(member.name.eq("하승완"), member.grade.eq(MemberGrade.SILVER))
+                .execute();
+
+        // then
+        em.flush();
+        em.clear();
+
+        Long productSize = queryFactory
+                .select(member.count())
+                .from(member)
+                .fetchOne();
+
+        assertThat(count).isEqualTo(1);
+        assertThat(productSize).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("SQL function - Replace")
+    void test28() throws Exception {
+        // given
+
+        // when
+        Tuple tuple = queryFactory
+                .select(
+                        member.name.as("originalName"),
+                        Expressions.stringTemplate("function('replace', {0}, {1}, {2})", member.name, "H", "Ha").as("replaceName")
+                )
+                .from(member)
+                .where(member.name.eq("HSW"))
+                .fetchOne();
+
+        // then
+        String originalName = tuple.get(0, String.class);
+        String replaceName = tuple.get(1, String.class);
+
+        assertThat(originalName).isEqualTo("HSW");
+        assertThat(replaceName).isEqualTo("HaSW");
+    }
+    
+    @Test
+    @DisplayName("SQL function - lower")
+    void test29() throws Exception {
+        // given
+        
+        // when
+        Tuple tuple = queryFactory
+                .select(
+                        member.name.as("originalName"),
+                        Expressions.stringTemplate("function('lower', {0})", member.name).as("lowerName"),
+                        member.name.lower().as("lowerName2")
+                )
+                .from(member)
+                .where(member.name.eq("HSW"))
+                .fetchOne();
+
+        // then
+        String originalName = tuple.get(0, String.class);
+        String lowerName = tuple.get(1, String.class);
+        String lowerName2 = tuple.get(2, String.class);
+
+        assertThat(originalName).isEqualTo("HSW");
+        assertThat(lowerName).isEqualTo("hsw");
+        assertThat(lowerName2).isEqualTo("hsw");
     }
 }

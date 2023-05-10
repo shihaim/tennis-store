@@ -1,6 +1,7 @@
 package com.tnc.study.tennisstore.api.product;
 
 import com.tnc.study.tennisstore.application.product.*;
+import com.tnc.study.tennisstore.domain.product.query.FindProductCondition;
 import com.tnc.study.tennisstore.framework.web.response.ApiResponse;
 import com.tnc.study.tennisstore.framework.web.response.Content;
 import jakarta.validation.Valid;
@@ -73,7 +74,7 @@ public class AdminProductController {
         return ResponseEntity.ok(ApiResponse.OK);
     }
 
-    @GetMapping
+//    @GetMapping
     public ResponseEntity<Page<FindProductResponse>> findProducts(Pageable pageable) {
         Page<FindProductResponse> products = findProductService.findProducts(pageable);
         return ResponseEntity.ok(products);
@@ -83,5 +84,15 @@ public class AdminProductController {
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
         deleteProductService.deleteProduct(id);
         return ResponseEntity.ok(ApiResponse.OK);
+    }
+
+    /**
+     * 상품 조회
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<Page<FindProductResponse>> findProducts(FindProductCondition condition, Pageable pageable) {
+        Page<FindProductResponse> products = findProductService.findProductsByCondition(condition, pageable);
+        return ResponseEntity.ok(products);
     }
 }

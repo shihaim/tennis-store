@@ -4,6 +4,8 @@ import com.tnc.study.tennisstore.domain.order.Delivery;
 import com.tnc.study.tennisstore.domain.order.Order;
 import com.tnc.study.tennisstore.domain.order.OrderLine;
 import com.tnc.study.tennisstore.domain.order.OrderRepository;
+import com.tnc.study.tennisstore.domain.order.query.FindOrderCondition;
+import com.tnc.study.tennisstore.domain.order.query.OrderQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ import static com.tnc.study.tennisstore.application.order.FindOrderResponse.*;
 public class FindOrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     public List<FindOrderResponse> findOrders() {
         return orderRepository.findOrdersUsingFetchJoin().stream()
@@ -61,6 +64,29 @@ public class FindOrderService {
 
     public Slice<FindOrderResponse> findOrdersByMember(Long memberId, Pageable pageable) {
         return orderRepository.findOrdersByMemberId(memberId, pageable)
+                .map(FindOrderService::convert);
+    }
+
+    /**
+     * 전체 주문 조회 (검색 조건)
+     *
+     * @param pageable
+     * @return
+     */
+    public Page<FindOrderResponse> findOrdersByCondition(FindOrderCondition condition, Pageable pageable) {
+        return orderQueryRepository.findOrdersByCondition(condition, pageable)
+                .map(FindOrderService::convert);
+    }
+
+    /**
+     * 회원별 주문 조회 ( No Offset )
+     *
+     * @param memberId
+     * @param pageable
+     * @return
+     */
+    public Slice<FindOrderResponse> findOrdersByMemberIdNoOffset(Long memberId, Long lastOrderId, Pageable pageable) {
+        return orderQueryRepository.findOrdersByMemberIdNoOffset(memberId, lastOrderId, pageable)
                 .map(FindOrderService::convert);
     }
 

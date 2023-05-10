@@ -45,7 +45,7 @@ public class FindMemberService {
     }
 
     public List<FindMemberResponse> findMembers(FindMemberCondition condition) {
-        return memberQuerydslRepository.findMembersByCondition(condition)
+        return memberRepository.findMembersByCondition(condition)
                 .stream()
                 .map(member -> new FindMemberResponse(
                         member.getId(),

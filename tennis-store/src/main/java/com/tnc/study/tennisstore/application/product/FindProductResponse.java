@@ -1,14 +1,12 @@
 package com.tnc.study.tennisstore.application.product;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
-@AllArgsConstructor
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FindProductResponse {
     private Long productId;
@@ -18,4 +16,15 @@ public class FindProductResponse {
     private String brand;
     private BigDecimal price;
     private int stockQuantity;
+
+    @QueryProjection
+    public FindProductResponse(Long productId, String productType, String name, String description, String brand, BigDecimal price, int stockQuantity) {
+        this.productId = productId;
+        this.productType = productType;
+        this.name = name;
+        this.description = description;
+        this.brand = brand;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
 }

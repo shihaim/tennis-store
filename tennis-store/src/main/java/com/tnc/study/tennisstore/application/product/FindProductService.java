@@ -1,6 +1,8 @@
 package com.tnc.study.tennisstore.application.product;
 
 import com.tnc.study.tennisstore.domain.product.ProductRepository;
+import com.tnc.study.tennisstore.domain.product.query.FindProductCondition;
+import com.tnc.study.tennisstore.domain.product.query.ProductQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FindProductService {
     private final ProductRepository productRepository;
+    private final ProductQueryRepository productQueryRepository;
 
     /**
      * 전체 상품 조회
@@ -30,5 +33,16 @@ public class FindProductService {
                         product.getPrice().getAmount(),
                         product.getStockQuantity()
                 ));
+    }
+
+    /**
+     * 상품 조회 (검색 조건)
+     *
+     * @param condition
+     * @param pageable
+     * @return
+     */
+    public Page<FindProductResponse> findProductsByCondition(FindProductCondition condition, Pageable pageable) {
+        return productQueryRepository.findProductByCondition(condition, pageable);
     }
 }
