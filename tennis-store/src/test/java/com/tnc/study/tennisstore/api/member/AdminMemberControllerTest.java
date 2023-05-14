@@ -7,6 +7,7 @@ import com.tnc.study.tennisstore.api.utils.CodeModelDocumentation;
 import com.tnc.study.tennisstore.application.member.*;
 import com.tnc.study.tennisstore.domain.Address;
 import com.tnc.study.tennisstore.domain.member.MemberGrade;
+import com.tnc.study.tennisstore.domain.member.query.FindMemberCondition;
 import com.tnc.study.tennisstore.framework.web.ApiObjectMapper;
 import com.tnc.study.tennisstore.framework.web.response.ApiResponse;
 import com.tnc.study.tennisstore.framework.web.response.Content;
@@ -69,7 +70,9 @@ class AdminMemberControllerTest {
 
         List<FindMemberResponse> findMemberResponses = Arrays.asList(findMemberResponse1, findMemberResponse2);
 
-        BDDMockito.given(findMemberService.findMembers()).willReturn(findMemberResponses);
+        FindMemberCondition condition = new FindMemberCondition(null, null, null, null);
+
+        BDDMockito.given(findMemberService.findMembers(condition)).willReturn(findMemberResponses);
 
         Content<FindMemberResponse> content = Content.of(findMemberResponses);
         String contentString = apiObjectMapper.writeValueAsString(content);

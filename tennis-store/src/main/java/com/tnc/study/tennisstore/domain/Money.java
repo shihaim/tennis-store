@@ -147,4 +147,9 @@ public class Money {
     public static Money of(long unscaledVal, int scale) {
         return new Money(BigDecimal.valueOf(unscaledVal, scale));
     }
+
+    @Override
+    public String toString() {
+        return amount.toString();
+    }
 }

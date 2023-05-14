@@ -34,6 +34,14 @@ dependencies {
 
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 	testImplementation("com.epages:restdocs-api-spec-mockmvc:0.17.1")
+
+	// QueryDSL 추가
+	// QueryDSL 라이브러리
+	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+	// 프로젝트의 @Entity들을 QType으로 뽑아줌
+	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 }
 
 tasks.withType<Test> {
@@ -57,3 +65,7 @@ tasks.register<Copy>("copyOasToSwagger") {
 	dependsOn("openapi3") // openapi3 Task가 먼저 실행되도록 설정
 }
 
+// clean task 수행 시 src/main/generated 디렉토리도 삭제
+tasks.clean {
+	delete("src/main/generated")
+}

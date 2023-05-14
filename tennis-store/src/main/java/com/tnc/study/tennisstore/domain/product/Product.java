@@ -1,6 +1,7 @@
 package com.tnc.study.tennisstore.domain.product;
 
 import com.tnc.study.tennisstore.domain.Money;
+import com.tnc.study.tennisstore.framework.jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "product_type")
-public abstract class Product {
+public abstract class Product extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -55,5 +56,17 @@ public abstract class Product {
         this.brand = brand;
         this.price = price;
         this.stockQuantity = stockQuantity;
+    }
+
+    public void removeStock(int quantity) {
+        int restStock = this.stockQuantity - quantity;
+        if (restStock < 0) {
+            throw new NotEnoughStockException(this.name);
+        }
+        this.stockQuantity = restStock;
+    }
+
+    public void addStock(int quantity) {
+        this.stockQuantity += quantity;
     }
 }
