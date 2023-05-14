@@ -10,4 +10,6 @@
   - Validation
   - H2 Database
 ---
-:link: [[2023-04-03] JPA Entity Mapping(Converter)](04-03.md)
+:link: [[2023-04-03] JPA Entity Mapping(Converter)](learn/04-03.md)
+
+:link: [[2023-04-05] API 응답 포맷](learn/04-05.md)
