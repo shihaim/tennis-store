@@ -35,6 +35,10 @@ dependencies {
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 	testImplementation("com.epages:restdocs-api-spec-mockmvc:0.17.1")
 
+	// Spring security 추가
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
+
 	// QueryDSL 추가
 	// QueryDSL 라이브러리
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -39,6 +40,9 @@ class MemberServiceTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setup() {
@@ -68,7 +72,8 @@ class MemberServiceTest {
 
         assertThat(findMember.getEmail().getAddress()).isEqualTo(email);
         assertThat(findMember.getName()).isEqualTo(name);
-        assertThat(findMember.getPassword().getValue()).isEqualTo(password);
+//        assertThat(findMember.getPassword().getValue()).isEqualTo(password);
+        assertThat(passwordEncoder.matches(password, findMember.getPassword().getValue())).isTrue();
         assertThat(findMember.getAddress().getAddress1()).isEqualTo(address1);
         assertThat(findMember.getAddress().getAddress2()).isEqualTo(address2);
         assertThat(findMember.getAddress().getZipcode()).isEqualTo(zipcode);
@@ -175,7 +180,8 @@ class MemberServiceTest {
         String initializedPassword = initializePasswordService.initializePassword(memberId);
 
         // then
-        assertThat(member.getPassword().getValue()).isEqualTo(initializedPassword);
+//        assertThat(member.getPassword().getValue()).isEqualTo(initializedPassword);
+        assertThat(passwordEncoder.matches(initializedPassword, member.getPassword().getValue())).isTrue();
     }
 
     @Test

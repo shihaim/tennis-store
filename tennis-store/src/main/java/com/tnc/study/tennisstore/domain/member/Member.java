@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +64,13 @@ public class Member extends BaseEntity {
         this.grade = grade;
     }
 
-    public String initializePassword() {
+    public String initializePassword(PasswordEncoder passwordEncoder) {
         String randomPassword = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
 
-        this.password = Password.of(randomPassword);
+        // 암호화
+        String encodedPassword = passwordEncoder.encode(randomPassword);
+
+        this.password = Password.of(encodedPassword);
 
         return randomPassword;
     }

@@ -4,6 +4,7 @@ import com.tnc.study.tennisstore.domain.Address;
 import com.tnc.study.tennisstore.domain.Email;
 import com.tnc.study.tennisstore.domain.Money;
 import com.tnc.study.tennisstore.domain.Password;
+import com.tnc.study.tennisstore.domain.admin.Admin;
 import com.tnc.study.tennisstore.domain.member.Member;
 import com.tnc.study.tennisstore.domain.member.MemberGrade;
 import com.tnc.study.tennisstore.domain.order.Order;
@@ -20,6 +21,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,25 +37,30 @@ public class initData implements CommandLineRunner {
     @PersistenceContext
     private EntityManager em;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
+
+        String encodedPassword = passwordEncoder.encode("1234");
+
         Member member = new Member(
                 Email.of("hashi00518@tnctec.co.kr"),
-                Password.of("1234"),
+                Password.of(encodedPassword),
                 "하승완",
                 new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
         );
 
         Member member2 = new Member(
                 Email.of("hashi00517@tnctec.co.kr"),
-                Password.of("1234"),
+                Password.of(encodedPassword),
                 "하승완",
                 new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
         );
 
         Member member3 = new Member(
                 Email.of("hashi00519@tnctec.co.kr"),
-                Password.of("1234"),
+                Password.of(encodedPassword),
                 "하승완",
                 new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
         );
@@ -118,5 +125,14 @@ public class initData implements CommandLineRunner {
             Order order = new Order(member, orderLines, member.getAddress(), receiver, "안전하게 와주세요");
             em.persist(order);
         }
+
+        // 어드민 생성
+        Admin admin = new Admin(
+                "hsw_admin",
+                Email.of("hashi00518@tnctec.co.kr"),
+                Password.of(encodedPassword),
+                "하승완프로"
+        );
+        em.persist(admin);
     }
 }

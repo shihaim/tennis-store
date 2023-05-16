@@ -6,6 +6,7 @@ import com.tnc.study.tennisstore.domain.Password;
 import com.tnc.study.tennisstore.domain.member.Member;
 import com.tnc.study.tennisstore.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateMemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Long signUp(CreateMemberRequest request) {
         Email email = Email.of(request.email());
 
         checkExistMember(email);
 
-        Password password = Password.of(request.password());
+        // 암호화
+        String encodedPassword = passwordEncoder.encode(request.password());
+
+        Password password = Password.of(encodedPassword);
         String name = request.name();
         Address address = new Address(
                 request.address1(),
