@@ -3,12 +3,14 @@ package com.tnc.study.tennisstore.framework.security;
 import com.tnc.study.tennisstore.framework.security.handler.CustomAccessDeniedHandler;
 import com.tnc.study.tennisstore.framework.security.handler.CustomAuthenticationEntryPoint;
 import com.tnc.study.tennisstore.framework.security.handler.LoginSuccessHandler;
+import com.tnc.study.tennisstore.framework.security.jwt.JwtAuthenticationFilter;
 import com.tnc.study.tennisstore.framework.web.ApiObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,6 +27,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -53,7 +60,10 @@ public class WebSecurityConfig {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        http.cors().configurationSource(corsConfigurationSource());
+
         http.addFilter(usernamePasswordAuthenticationFilter());
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests()
             .requestMatchers(WHITE_LIST).permitAll() // White-List 모두 허용
@@ -83,6 +93,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new LoginSuccessHandler(apiObjectMapper);
     }
@@ -109,5 +124,21 @@ public class WebSecurityConfig {
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler(apiObjectMapper);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        configuration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

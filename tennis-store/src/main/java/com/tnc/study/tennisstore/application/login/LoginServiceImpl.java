@@ -40,7 +40,7 @@ public class LoginServiceImpl implements LoginService {
 
             List<SimpleGrantedAuthority> roles = List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_KMJ")
+                    new SimpleGrantedAuthority("ROLE_HSW")
             );
 
             return new User(admin.getId(), admin.getPassword().getValue(), roles);
