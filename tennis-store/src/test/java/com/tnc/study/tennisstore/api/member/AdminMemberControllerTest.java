@@ -60,7 +60,7 @@ class AdminMemberControllerTest {
     @DisplayName("GET /api/admin/members")
     void testFindMembersAPI() throws Exception {
         //given
-        Address address = new Address("서울시 영등포구 신길동 51-3", "7층", "11111");
+        Address address = new Address("서울특별시 강남구 도곡로 117", "12층", "06253");
         FindMemberResponse findMemberResponse1 = new FindMemberResponse(1L, "hashi00518@tnctec.co.kr", "하승완",
                 address.getAddress1(), address.getAddress2(), address.getZipcode(), MemberGrade.BRONZE
         );
@@ -124,7 +124,7 @@ class AdminMemberControllerTest {
                 "hashi00518@tnctec.co.kr",
                 "1234",
                 "하승완",
-                "서울시 영등포구 신길동 51-3", "7층", "11111");
+                "서울특별시 강남구 도곡로 117", "12층", "06253");
 
         BDDMockito.given(createMemberService.signUp(BDDMockito.any(CreateMemberRequest.class)))
                 .willReturn(memberId);
@@ -178,9 +178,9 @@ class AdminMemberControllerTest {
 
         ChangeMemberInfoRequest changeMemberInfoRequest = new ChangeMemberInfoRequest(
                 "HSW",
-                "서울시 영등포구 신길동 51-3",
-                "7층",
-                "11111",
+                "서울특별시 강남구 도곡로 117",
+                "12층",
+                "06253",
                 MemberGrade.GOLD);
 
         BDDMockito.given(changeMemberInfoService.changeMemberInfo(BDDMockito.eq(memberId), BDDMockito.any(ChangeMemberInfoRequest.class)))
@@ -313,7 +313,7 @@ class AdminMemberControllerTest {
     void testFindMemberAPI() throws Exception {
         //given
         Long memberId = 1L;
-        Address address = new Address("서울시 영등포구 신길동 51-3", "7층", "11111");
+        Address address = new Address("서울특별시 강남구 도곡로 117", "12층", "06253");
         FindMemberResponse findMemberResponse = new FindMemberResponse(
                 memberId,
                 "hashi00518@tnctec.co.kr",

@@ -41,21 +41,21 @@ public class initData implements CommandLineRunner {
                 Email.of("hashi00518@tnctec.co.kr"),
                 Password.of("1234"),
                 "하승완",
-                new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
+                new Address("서울특별시 강남구 도곡로 117", "12층", "06253")
         );
 
         Member member2 = new Member(
                 Email.of("hashi00517@tnctec.co.kr"),
                 Password.of("1234"),
                 "하승완",
-                new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
+                new Address("서울특별시 강남구 도곡로 117", "12층", "06253")
         );
 
         Member member3 = new Member(
                 Email.of("hashi00519@tnctec.co.kr"),
                 Password.of("1234"),
                 "하승완",
-                new Address("서울특별시 영등포구 신길동 51-3", "7층", "11111")
+                new Address("서울특별시 강남구 도곡로 117", "12층", "06253")
         );
 
         member3.changeMemberInfo(

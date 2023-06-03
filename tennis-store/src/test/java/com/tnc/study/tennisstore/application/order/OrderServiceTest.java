@@ -9,8 +9,6 @@ import com.tnc.study.tennisstore.domain.member.MemberRepository;
 import com.tnc.study.tennisstore.domain.order.*;
 import com.tnc.study.tennisstore.domain.product.Product;
 import com.tnc.study.tennisstore.domain.product.ProductRepository;
-import com.tnc.study.tennisstore.domain.product.ball.Ball;
-import com.tnc.study.tennisstore.domain.product.ball.BallType;
 import com.tnc.study.tennisstore.domain.product.racquet.Racquet;
 import com.tnc.study.tennisstore.domain.product.shoes.GroundType;
 import com.tnc.study.tennisstore.domain.product.shoes.Shoes;
@@ -49,9 +47,9 @@ class OrderServiceTest {
 
     @BeforeEach
     void setup() {
-        String address1 = "서울특별시 영등포구 신길동 51-3";
-        String address2 = "7층";
-        String zipcode = "11111";
+        String address1 = "서울특별시 강남구 도곡로 117";
+        String address2 = "12층";
+        String zipcode = "06253";
 
         Email email = Email.of("hashi00518@tnctec.co.kr");
         Password password = Password.of("1234");

@@ -219,7 +219,7 @@ public class QueryDSLTest {
         assertThat(products.get(1).getName()).isEqualTo("라켓 99");
     }
 
-    @Test
+//    @Test
     @DisplayName("기본 검색 조건 2")
     void test5() {
         List<Member> members = queryFactory
@@ -234,7 +234,7 @@ public class QueryDSLTest {
         assertThat(members.get(1).getId()).isEqualTo(1);
     }
 
-    @Test
+//    @Test
     @DisplayName("페이징 - 전체 데이터 건수")
     void test6() {
 

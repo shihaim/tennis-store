@@ -28,7 +28,7 @@ class MemberJpaRepositoryTest {
     void testMember() throws Exception {
         //given
         Email email = Email.of("hashi00518@tnctec.co.kr");
-        Address address = new Address("서울시 영등포구", "신길동 51-3", "11111");
+        Address address = new Address("서울특별시 강남구 도곡로 117", "12층", "06253");
         Password password = Password.of("1234");
         Member member = new Member(email, password, "하승완", address);
 

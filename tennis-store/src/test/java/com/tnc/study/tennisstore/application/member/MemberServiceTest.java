@@ -45,7 +45,7 @@ class MemberServiceTest {
         Email email = Email.of("hashi00518@tnctec.co.kr");
         Password password = Password.of("1234");
         String name = "하승완";
-        Address address = new Address("서울시 영등포구 신길동 51-3", "7층", "11111");
+        Address address = new Address("서울특별시 강남구 도곡로 117", "12층", "06253");
 
         Member member = new Member(email, password, name, address);
         memberRepository.save(member);
@@ -57,9 +57,9 @@ class MemberServiceTest {
         String email = "hashi00517@tnctec.co.kr";
         String password = "1234";
         String name = "하승완";
-        String address1 = "서울시 영등포구 신길동 51-3";
-        String address2 = "7층";
-        String zipcode = "11111";
+        String address1 = "서울특별시 강남구 도곡로 117";
+        String address2 = "12층";
+        String zipcode = "06253";
 
         CreateMemberRequest createMemberRequest = new CreateMemberRequest(email, password, name, address1, address2, zipcode);
 
@@ -83,9 +83,9 @@ class MemberServiceTest {
         String email = "hashi00518@tnctec.co.kr";
         String password = "1234";
         String name = "하승완";
-        String address1 = "서울시 영등포구 신길동 51-3";
-        String address2 = "7층";
-        String zipcode = "11111";
+        String address1 = "서울특별시 강남구 도곡로 117";
+        String address2 = "12층";
+        String zipcode = "06253";
 
         CreateMemberRequest createMemberRequest = new CreateMemberRequest(email, password, name, address1, address2, zipcode);
 
@@ -105,7 +105,7 @@ class MemberServiceTest {
         Email email = Email.of("hashi00518@gmail.com");
         Password password = Password.of("1234");
         String name = "HSW";
-        Address address = new Address("서울시 영등포구 신길동 51-3", "7층", "11111");
+        Address address = new Address("서울특별시 강남구 도곡로 117", "12층", "06253");
 
         Member member = new Member(email, password, name, address);
         memberRepository.save(member);
@@ -126,7 +126,7 @@ class MemberServiceTest {
         String name = "HSW";
         String address1 = "서울시 강남구 도곡로 117";
         String address2 = "12층";
-        String zipcode = "12345";
+        String zipcode = "06253";
         MemberGrade grade = MemberGrade.GOLD;
 
         ChangeMemberInfoRequest request = new ChangeMemberInfoRequest(
@@ -185,9 +185,9 @@ class MemberServiceTest {
         String email = "hashi00517@tnctec.co.kr";
         String password = "1234";
         String name = "하승완";
-        String address1 = "서울시 영등포구 신길동 51-3";
-        String address2 = "7층";
-        String zipcode = "11111";
+        String address1 = "서울특별시 강남구 도곡로 117";
+        String address2 = "12층";
+        String zipcode = "06253";
 
         Member member = new Member(
                 Email.of(email),
