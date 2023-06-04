@@ -248,7 +248,7 @@ class AdminMemberControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(MockMvcRestDocumentationWrapper
                         .document(
-                                "admin/members/deleteMember",
+                                "admin/members/DeleteMember",
                                 new ResourceSnippet(
                                         new ResourceSnippetParametersBuilder()
                                                 .tag("member")

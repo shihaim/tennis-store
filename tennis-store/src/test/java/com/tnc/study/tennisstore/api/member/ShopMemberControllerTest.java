@@ -37,6 +37,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -152,15 +154,20 @@ class ShopMemberControllerTest {
 
         // Paging 처리
         PageRequest pageRequest = PageRequest.of(0, 1);
-        SliceImpl content = new SliceImpl<>(findOrderResponses, pageRequest, false);
+        SliceImpl<FindOrderResponse> content = new SliceImpl<>(findOrderResponses, pageRequest, false);
         BDDMockito.given(findOrderService.findOrdersByMemberIdNoOffset(memberId, memberId, pageRequest)).willReturn(content);
 
         String contentString = apiObjectMapper.writeValueAsString(content);
 
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.add("lastOrderId", "1");
+        valueMap.add("size", "1");
+
         //when
-        ResultActions result = mockMvc.perform(get("/api/shop/members/{id}/orders?lastOrderId=1&size=1", memberId)
+        ResultActions result = mockMvc.perform(get("/api/shop/members/{id}/orders", memberId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
+                .params(valueMap)
                 .characterEncoding(StandardCharsets.UTF_8));
 
         //then
