@@ -240,7 +240,7 @@ class AdminProductControllerTest {
                                         new ResourceSnippetParametersBuilder()
                                                 .tag("product")
                                                 .description("상품을 생성하는 API")
-                                                .summary("공 생성")
+                                                .summary("Ball 생성")
                                                 .requestSchema(Schema.schema("CreateBallRequest"))
                                                 .responseSchema(ApiSchema.apiResponseSchema())
                                                 .requestFields(
@@ -309,7 +309,7 @@ class AdminProductControllerTest {
                                                 .tag("product")
                                                 .description("상품을 수정하는 API")
                                                 .summary("Racquet 수정")
-                                                .requestSchema(Schema.schema("ChangeRacquetInfo"))
+                                                .requestSchema(Schema.schema("ChangeRacquetRequest"))
                                                 .responseSchema(ApiSchema.apiResponseSchema())
                                                 .pathParameters(ResourceDocumentation.parameterWithName("id").description("라켓 ID"))
                                                 .requestFields(
@@ -485,7 +485,6 @@ class AdminProductControllerTest {
                                                 .tag("product")
                                                 .description("상품을 삭제하는 API")
                                                 .summary("상품 삭제")
-                                                .requestSchema(Schema.schema("DeleteProduct"))
                                                 .responseSchema(ApiSchema.apiResponseSchema())
                                                 .pathParameters(ResourceDocumentation.parameterWithName("id").description("상품 ID"))
                                                 .responseFields(
@@ -574,6 +573,7 @@ class AdminProductControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/admin/products")
+                .content(contentString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .params(valueMap)

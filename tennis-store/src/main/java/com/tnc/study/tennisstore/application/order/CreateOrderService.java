@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.tnc.study.tennisstore.application.order.CreateOrderRequest.*;
 
@@ -31,8 +32,12 @@ public class CreateOrderService {
     private final ProductRepository productRepository;
 
     public Long placeOrder(CreateOrderRequest request) {
-        Map<Long, OrderProduct> orderProducts = request.orderProducts();
+//        Map<Long, OrderProduct> orderProducts = request.orderProducts();
+//        Set<Long> productIds = orderProducts.keySet();
+        Map<Long, Integer> orderProducts = request.orderProducts().stream()
+                .collect(Collectors.toMap(OrderProduct::productId, OrderProduct::orderCount));
         Set<Long> productIds = orderProducts.keySet();
+
         List<Product> products = productRepository.findAllById(productIds);
 
         if (productIds.size() != products.size()) {
@@ -44,7 +49,7 @@ public class CreateOrderService {
                 .map(product -> new OrderLine(
                         product,
                         product.getPrice(),
-                        orderProducts.get(product.getId()).orderCount()
+                        orderProducts.get(product.getId())
                 )).toList();
 
         // 회원 조회

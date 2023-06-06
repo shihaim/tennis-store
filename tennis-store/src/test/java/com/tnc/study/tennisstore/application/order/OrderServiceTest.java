@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.tnc.study.tennisstore.application.order.CreateOrderRequest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -107,8 +108,10 @@ class OrderServiceTest {
         String receiverPhone = "010-1234-5678";
         String deliveryMessage = "안전하게 와주세요";
 
-        Map<Long, CreateOrderRequest.OrderProduct> orderProducts = products.stream()
-                .collect(Collectors.toMap(Product::getId, product -> new CreateOrderRequest.OrderProduct(2)));
+        List<OrderProduct> orderProducts = products.stream().map(product -> new OrderProduct(product.getId(), 2)).toList();
+
+//        Map<Long, OrderProduct> orderProducts = products.stream()
+//                .collect(Collectors.toMap(Product::getId, product -> new OrderProduct(2)));
 
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(memberId,
                 address.getAddress1(),

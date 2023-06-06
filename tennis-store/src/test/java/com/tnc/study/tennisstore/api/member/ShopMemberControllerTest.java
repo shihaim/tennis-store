@@ -29,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -154,7 +155,7 @@ class ShopMemberControllerTest {
 
         // Paging 처리
         PageRequest pageRequest = PageRequest.of(0, 1);
-        SliceImpl<FindOrderResponse> content = new SliceImpl<>(findOrderResponses, pageRequest, false);
+        Slice<FindOrderResponse> content = new SliceImpl<>(findOrderResponses, pageRequest, false);
         BDDMockito.given(findOrderService.findOrdersByMemberIdNoOffset(memberId, memberId, pageRequest)).willReturn(content);
 
         String contentString = apiObjectMapper.writeValueAsString(content);
@@ -165,6 +166,7 @@ class ShopMemberControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(get("/api/shop/members/{id}/orders", memberId)
+                .content(contentString)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .params(valueMap)
@@ -179,7 +181,7 @@ class ShopMemberControllerTest {
                                 "shop/members/findOrdersByMemberIdNoOffset",
                                 new ResourceSnippet(
                                         new ResourceSnippetParametersBuilder()
-                                                .tag("shop")
+                                                .tag("shop - member")
                                                 .description("회원별 주문 조회 API")
                                                 .summary("No Offset 방식 조회")
                                                 .responseSchema(Schema.schema("FindOrdersByMemberIdNoOffset"))
@@ -218,7 +220,8 @@ class ShopMemberControllerTest {
                                                         PayloadDocumentation.fieldWithPath("empty").ignored()
                                                 ).build()
                                 )
-                        ));
+                        )
+                );
     }
 
 
